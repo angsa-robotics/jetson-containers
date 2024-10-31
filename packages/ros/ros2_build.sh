@@ -136,16 +136,19 @@ echo "--skip-keys $SKIP_KEYS"
 # install dependencies using rosdep
 rosdep init
 rosdep update
-rosdep install -y \
+rosdep install -y -r \
 	--ignore-src \
 	--from-paths src \
 	--rosdistro ${ROS_DISTRO} \
 	--skip-keys "$SKIP_KEYS"
 
+sed -i '89,99 s/^/#/' ${ROS_ROOT}/src/image_pipeline/image_proc/CMakeLists.txt 
+
 # build it all - for verbose, see https://answers.ros.org/question/363112/how-to-see-compiler-invocation-in-colcon-build
 colcon build \
 	--merge-install \
-	--cmake-args -DCMAKE_BUILD_TYPE=Release 
+	--cmake-args -DCMAKE_BUILD_TYPE=Release \
+	--continue-on-error
     
 # remove build files
 rm -rf ${ROS_ROOT}/src

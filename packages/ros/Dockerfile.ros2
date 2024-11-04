@@ -125,6 +125,9 @@ RUN rosdep init && \
 # Patch CMakeLists.txt as per specific needs
 RUN sed -i '89,99 s/^/#/' ${ROS_ROOT}/src/image_pipeline/image_proc/CMakeLists.txt
 
+# upgrade pybind11 for rosbag2_py
+RUN apt-get purge -y pybind11-dev && pip3 install --upgrade --no-cache-dir pybind11-global
+
 # Build using colcon
 RUN colcon build \
         --merge-install \

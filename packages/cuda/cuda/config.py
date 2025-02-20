@@ -22,7 +22,7 @@ def pip_cache(version, requires=None):
     """
     short_version = f"cu{version.replace('.', '')}"
     repo_path = f"jp{JETPACK_VERSION.major}/{short_version}"
-    index_host = "jetson.webredirect.org"
+    index_host = "jetson-ai-lab.dev"
     
     pip_cache = package.copy()
     
@@ -33,9 +33,9 @@ def pip_cache(version, requires=None):
     pip_cache['test'] = []
 
     pip_cache['build_args'] = {
-        'TAR_INDEX_URL': f"http://{index_host}:8000/{repo_path}",
-        'PIP_INDEX_REPO': f"http://{index_host}/{repo_path}",
-        'PIP_TRUSTED_HOSTS': index_host,
+        'TAR_INDEX_URL': f"https://apt.{index_host}/{repo_path}",
+        'PIP_INDEX_REPO': f"https://pypi.{index_host}/{repo_path}",
+        #'PIP_TRUSTED_HOSTS': index_host,
         'PIP_UPLOAD_REPO': os.environ.get('PIP_UPLOAD_REPO', f"{os.environ.get('PIP_UPLOAD_HOST', 'http://localhost')}/{repo_path}"),
         'PIP_UPLOAD_USER': os.environ.get('PIP_UPLOAD_USER', f"jp{JETPACK_VERSION.major}"),
         'PIP_UPLOAD_PASS': os.environ.get('PIP_UPLOAD_PASS', 'none'),
@@ -150,11 +150,13 @@ package = [
     # JetPack 6
     cuda_package('12.2', 'https://nvidia.box.com/shared/static/uvqtun1sc0bq76egarc8wwuh6c23e76e.deb', 'cuda-tegra-repo-ubuntu2204-12-2-local', requires='==36.*'), 
     cuda_package('12.4', 'https://developer.download.nvidia.com/compute/cuda/12.4.1/local_installers/cuda-tegra-repo-ubuntu2204-12-4-local_12.4.1-1_arm64.deb', 'cuda-tegra-repo-ubuntu2204-12-4-local', requires='==36.*'), 
-    cuda_package('12.6', 'https://developer.download.nvidia.com/compute/cuda/12.6.2/local_installers/cuda-tegra-repo-ubuntu2204-12-6-local_12.6.2-1_arm64.deb', 'cuda-tegra-repo-ubuntu2204-12-6-local', requires='==36.*'), 
+    cuda_package('12.6', 'https://developer.download.nvidia.com/compute/cuda/12.6.3/local_installers/cuda-tegra-repo-ubuntu2204-12-6-local_12.6.3-1_arm64.deb', 'cuda-tegra-repo-ubuntu2204-12-6-local', requires='==36.*'),
+    cuda_package('12.8', 'https://developer.download.nvidia.com/compute/cuda/12.8.0/local_installers/cuda-tegra-repo-ubuntu2204-12-8-local_12.8.0-1_arm64.deb', 'cuda-tegra-repo-ubuntu2204-12-8-local', requires='==36.*'),
     cuda_samples('12.2', requires='==36.*'),
     cuda_samples('12.4', requires='==36.*'),
     cuda_samples('12.6', branch='12.5', requires='==36.*'),
-    
+    cuda_samples('12.8', requires='==36.*'),
+
     # JetPack 5
     cuda_package('12.2', 'https://developer.download.nvidia.com/compute/cuda/12.2.2/local_installers/cuda-tegra-repo-ubuntu2004-12-2-local_12.2.2-1_arm64.deb', 'cuda-tegra-repo-ubuntu2004-12-2-local', requires='==35.*'),
     cuda_package('11.8', 'https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda-tegra-repo-ubuntu2004-11-8-local_11.8.0-1_arm64.deb', 'cuda-tegra-repo-ubuntu2004-11-8-local', requires='==35.*'),

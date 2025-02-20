@@ -3,7 +3,8 @@ set -ex
 
 
 echo "Cloning manifold version ${MANIFOLD_VERSION}"
-git clone --branch=v${MANIFOLD_VERSION} --depth=1 --recursive https://github.com/elalish/manifold.git /opt/manifold
+git clone --branch=v${MANIFOLD_VERSION} --depth=1 --recursive https://github.com/elalish/manifold.git /opt/manifold || \
+git clone --depth=1 --recursive https://github.com/elalish/manifold.git /opt/manifold
 
 # Navigate to the directory containing PyMeshLab's setup.py
 cd /opt/manifold && \
@@ -11,7 +12,7 @@ mkdir build && \
 cd build && \
 cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DMANIFOLD_PYBIND=ON -DMANIFOLD_CROSS_SECTION=ON .. && \
 make -j $(nproc) && \
-cd /opt/manifold && pip3 wheel . -w /opt/manifold/wheels
+cd /opt/manifold && pip3 wheel . -w /opt/manifold/wheels --verbose
 
 # Verify the contents of the /opt directory
 ls /opt/manifold/wheels

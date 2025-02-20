@@ -5,13 +5,14 @@ set -ex
 echo "Building PyTorch ${PYTORCH_BUILD_VERSION}"
    
 # build from source
-git clone --branch "v${PYTORCH_BUILD_VERSION}" --depth=1 --recursive https://github.com/pytorch/pytorch /opt/pytorch
+git clone --branch "v${PYTORCH_BUILD_VERSION}" --depth=1 --recursive https://github.com/pytorch/pytorch /opt/pytorch ||
+git clone --depth=1 --recursive https://github.com/pytorch/pytorch /opt/pytorch
 cd /opt/pytorch
 
 # https://github.com/pytorch/pytorch/issues/138333
 CPUINFO_PATCH=third_party/cpuinfo/src/arm/linux/aarch64-isa.c
 sed -i 's|cpuinfo_log_error|cpuinfo_log_warning|' ${CPUINFO_PATCH}
-grep 'PR_SVE_GET_VL' ${CPUINFO_PATCH}
+grep 'PR_SVE_GET_VL' ${CPUINFO_PATCH} || echo "patched ${CPUINFO_PATCH}"
 tail -20 ${CPUINFO_PATCH}
 
 pip3 install --no-cache-dir -r requirements.txt

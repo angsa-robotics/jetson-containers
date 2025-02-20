@@ -7,18 +7,14 @@ git clone --depth=1 --recursive https://github.com/tensorflow/text /opt/tensorfl
 
 cd /opt/tensorflow-text/
 
-git apply /tmp/tensorflow-text/patch.diff
-git diff
-git status
-
 export HERMETIC_PYTHON_VERSION="${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}"
 export PYTHON_BIN_PATH="$(which python3)"
 export PYTHON_LIB_PATH="$(python3 -c 'import site; print(site.getsitepackages()[0])')"
 export TF_NEED_CUDA=1
 export TF_CUDA_CLANG=1
 export CLANG_CUDA_COMPILER_PATH="/usr/lib/llvm-17/bin/clang"
-export HERMETIC_CUDA_VERSION=12.6.1
-export HERMETIC_CUDNN_VERSION=9.4.0 
+export HERMETIC_CUDA_VERSION=12.8.0
+export HERMETIC_CUDNN_VERSION=9.7.0
 export HERMETIC_CUDA_COMPUTE_CAPABILITIES=8.7
 export TF_VERSION=${TENSORFLOW_TEXT_VERSION}
 ./oss_scripts/configure.sh

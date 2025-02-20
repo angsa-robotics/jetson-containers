@@ -4,11 +4,12 @@ set -ex
 # Clone the repository if it doesn't exist
 if [ ! -d /opt/pycolmap ]; then
     echo "Cloning pycolmap version ${PYCOLMAP_VERSION}"
-    git clone --branch=v${PYCOLMAP_VERSION} --depth=1 --recursive https://github.com/colmap/colmap /opt/pycolmap
+    git clone --branch=v${PYCOLMAP_VERSION} --depth=1 --recursive https://github.com/colmap/colmap /opt/colmap || \
+    git clone --depth=1 --recursive https://github.com/colmap/colmap /opt/colmap
 fi
 
 # Navigate to the directory containing PyMeshLab's setup.py
-cd /opt/pycolmap && \
+cd /opt/colmap && \
 mkdir build && \
 cd build && \
 cmake .. -DCUDA_ENABLED=ON \
@@ -16,7 +17,9 @@ cmake .. -DCUDA_ENABLED=ON \
 make -j $(nproc) && \
 make install && \
 cd /opt/colmap/pycolmap && \
-pip3 wheel . -w /opt/pycolmap/wheels && pip3 install /opt/pycolmap/wheels/pycolmap-*.whl
+pip3 wheel . -w /opt/pycolmap/wheels --verbose
+pip3 install /opt/pycolmap/wheels/pycolmap-*.whl
+ldconfig
 
 # Verify the contents of the /opt directory
 ls /opt/pycolmap/wheels

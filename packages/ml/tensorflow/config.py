@@ -7,7 +7,7 @@ def tensorflow(version, tensorflow_version='tf2', requires=None, default=False):
     pkg = package.copy()
   
     if default:
-        pkg['alias'] = 'tensorflow2' if tensorflow_version == 'tf2' else 'tensorflow1'
+        pkg['alias'] = ['tensorflow2'] if tensorflow_version == 'tf2' else ['tensorflow1']
         
     if requires:
         pkg['requires'] = requires   
@@ -77,7 +77,7 @@ def tensorflow(version, tensorflow_version='tf2', requires=None, default=False):
             'TENSORFLOW_VERSION': version,
             'PYTHON_VERSION_MAJOR': PYTHON_VERSION.major,
             'PYTHON_VERSION_MINOR': PYTHON_VERSION.minor,
-            'FORCE_BUILD': 'on',
+            'FORCE_BUILD': 'off',
         }
         pkg['notes'] += " (will be built from source)"
         pkg['dockerfile'] = 'Dockerfile.pip'
@@ -89,9 +89,13 @@ def tensorflow(version, tensorflow_version='tf2', requires=None, default=False):
     builder['alias'] = [f'tensorflow2:{version}-builder' if tensorflow_version == 'tf2' else f'tensorflow1:{version}-builder']
     
     if Version(version) == TENSORFLOW_VERSION:
-        pkg['alias'].extend(['tensorflow','tensorflow2'])
-        builder['alias'].extend(['tensorflow:builder', 'tensorflow2:builder'])
+        pkg['alias'].append('tensorflow')
+        builder['alias'].append('tensorflow:builder')
 
+        if tensorflow_version == 'tf2':
+            pkg['alias'].append('tensorflow2')
+            builder['alias'].append('tensorflow2:builder')
+            
     return [pkg, builder]
 
 package = [
@@ -99,19 +103,32 @@ package = [
     *tensorflow(
         version='1.15.5',
         tensorflow_version='tf1',
-        default=(L4T_VERSION.major == 35),
+        default=(L4T_VERSION.major <= 35),
         requires='<36'
+    ),
+    *tensorflow(
+        version='2.7.0',
+        tensorflow_version='tf2',
+        default=(L4T_VERSION.major == 32),
+        requires='<35'
     ),
     # TensorFlow tf2 para L4T >=36
     *tensorflow(
         version='2.16.1',
         tensorflow_version='tf2',
-        requires='>=36'
+        requires='>=36',
+        default=(L4T_VERSION <= Version('36.3')),
     ),
     *tensorflow(
         version='2.18.0',
         tensorflow_version='tf2',
         requires='>=36',
-        default=(L4T_VERSION.major >= 36),
+        default=(L4T_VERSION > Version('36.3')),
+    ),
+*tensorflow(
+        version='2.19.0',
+        tensorflow_version='tf2',
+        requires='>=36',
+        default=(L4T_VERSION > Version('36.3')),
     ),
 ]

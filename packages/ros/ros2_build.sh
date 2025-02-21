@@ -155,7 +155,7 @@ rosdep install -y \
 # build it all - for verbose, see https://answers.ros.org/question/363112/how-to-see-compiler-invocation-in-colcon-build
 colcon build \
 	--merge-install \
-	--cmake-args -DCMAKE_BUILD_TYPE=Release 
+	--cmake-args -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
     
 # remove build files
 rm -rf ${ROS_ROOT}/src
